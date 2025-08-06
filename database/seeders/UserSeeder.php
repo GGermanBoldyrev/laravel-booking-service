@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -14,10 +13,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::factory()->count(3)->create();
+        $command = $this->command;
 
-        foreach ($users as $user) {
-            $this->command->info("User: {$user->name}, Token: {$user->api_token}");
-        }
+        User::factory()->count(3)->create()->each(function ($user) use ($command) {
+            $plainToken = Str::random(60);
+            $user->api_token = hash('sha256', $plainToken);
+            $user->save();
+
+            $command->info("User {$user->name}, token: {$plainToken}");
+        });
     }
 }

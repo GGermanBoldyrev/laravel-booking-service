@@ -20,7 +20,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'api_token' => Str::random(60),
+            'api_token' => null,
         ];
     }
 }
